@@ -65,3 +65,14 @@ export const getPostById = async (request: Request, response: Response): Promise
   }
 };
 
+export const createPost = async (request: Request, response: Response) => {
+  try {
+    const { title, content, category, tags } = request.body;
+
+    const newPost = await db.insert(postsTable).values({ title: title, content: content, category: category, tags: tags }).returning();
+    response.status(201).json(newPost);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    response.status(400).json({ error: message });
+  }
+};
