@@ -65,9 +65,36 @@ export const getPostById = async (request: Request, response: Response): Promise
   }
 };
 
-export const createPost = async (request: Request, response: Response) => {
+export const createPost = async (request: Request, response: Response): Promise<void> => {
   try {
     const { title, content, category, tags } = request.body;
+
+    if (!title || title.trim() === "") {
+      response.status(400).json({ error: 'The title field is empty.' });
+      return
+    }
+
+    if (!content || content.trim() === "") {
+      response.status(400).json({ error: 'The content field is empty.' });
+      return
+    }
+
+    if (!category || category.trim() === "") {
+      response.status(400).json({ error: 'The category field is empty.' });
+      return
+    }
+
+    if (!tags) {
+      response.status(400).json({ error: 'The tags field is empty.' });
+      return
+    }
+
+    for (const tag of tags) {
+      if(tag.trim() === "") {
+        response.status(400).json({ error: 'Tags cannot be empty strings.' });
+        return
+      }
+    }
 
     const newPost = await db.insert(postsTable).values({ title: title, content: content, category: category, tags: tags }).returning();
     response.status(201).json(newPost);
@@ -76,3 +103,4 @@ export const createPost = async (request: Request, response: Response) => {
     response.status(400).json({ error: message });
   }
 };
+
