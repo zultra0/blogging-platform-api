@@ -104,3 +104,19 @@ export const createPost = async (request: Request, response: Response): Promise<
   }
 };
 
+export const updatePost = async (request: Request, response: Response) => {
+  try {
+    const id = Number(request.params.id);
+    const { title, content, category, tags } = request.body;
+
+    const updatedPost = await db.update(postsTable)
+      .set({ title: title, content: content, category: category, tags: tags })
+      .where(eq(postsTable.id, id))
+      .returning()
+
+    response.status(200).json(updatedPost);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    response.status(400).json({ error: message });
+  }
+};
