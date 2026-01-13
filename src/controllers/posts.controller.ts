@@ -106,15 +106,29 @@ export const createPost = async (request: Request, response: Response): Promise<
 
 export const updatePost = async (request: Request, response: Response) => {
   try {
-    const id = Number(request.params.id);
+    const { id } = request.params;
     const { title, content, category, tags } = request.body;
 
     const updatedPost = await db.update(postsTable)
       .set({ title: title, content: content, category: category, tags: tags })
-      .where(eq(postsTable.id, id))
+      .where(eq(postsTable.id, Number(id)))
       .returning()
 
     response.status(200).json(updatedPost);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    response.status(400).json({ error: message });
+  }
+};
+
+export const deletePost = async (request: Request, response: Response) => {
+  try {
+    const { id } = request.params;
+
+    const deletedPost = await db.delete(postsTable)
+      .where(eq(postsTable.id, Number(id)));
+
+    response.sendStatus(204);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     response.status(400).json({ error: message });
