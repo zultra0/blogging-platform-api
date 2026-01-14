@@ -67,22 +67,6 @@ export const getPostById = async (
   }
 };
 
-/**
- * The function `createPost` handles the creation of a new post with validation checks for title,
- * content, category, and tags.
- * @param {Request} request - The `request` parameter in the `createPost` function is of type
- * `Request`, which likely represents an HTTP request object containing data sent by the client to the
- * server. This object typically includes information such as the request method, headers, body, and
- * other relevant details provided by the client.
- * @param {Response} response - The `response` parameter in the `createPost` function is an object that
- * represents the HTTP response that will be sent back to the client. It is used to send data back to
- * the client, set the status code of the response, and provide information about any errors that may
- * occur during the request
- * @returns If all the validation checks pass successfully, a new post object is being returned with
- * status code 201 (Created). If any of the validation checks fail, an error message is being returned
- * with the corresponding status code (400 Bad Request).
- */
-
 export const createPost = async (
   request: Request,
   response: Response
@@ -137,6 +121,42 @@ export const updatePost = async (request: Request, response: Response) => {
   try {
     const { id } = request.params;
     const { title, content, category, tags } = request.body;
+    const [postExist] = await db
+      .select()
+      .from(postsTable)
+      .where(eq(postsTable.id, Number(id)));
+
+    if (!title || title.trim() === "") {
+      response.status(400).json({ error: "The title field is empty." });
+      return;
+    }
+
+    if (!content || content.trim() === "") {
+      response.status(400).json({ error: "The content field is empty." });
+      return;
+    }
+
+    if (!category || category.trim() === "") {
+      response.status(400).json({ error: "The category field is empty." });
+      return;
+    }
+
+    if (!tags) {
+      response.status(400).json({ error: "The tags field is empty." });
+      return;
+    }
+
+    for (const tag of tags) {
+      if (tag.trim() === "") {
+        response.status(400).json({ error: "Tags cannot be empty strings." });
+        return;
+      }
+    }
+
+    if (!postExist) {
+      response.status(404).json({ error: "Post not found" });
+      return;
+    }
 
     const updatedPost = await db
       .update(postsTable)
