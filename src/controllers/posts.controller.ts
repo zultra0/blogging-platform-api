@@ -174,6 +174,15 @@ export const updatePost = async (request: Request, response: Response) => {
 export const deletePost = async (request: Request, response: Response) => {
   try {
     const { id } = request.params;
+    const [postExist] = await db
+      .select()
+      .from(postsTable)
+      .where(eq(postsTable.id, Number(id)));
+
+    if (!postExist) {
+      response.status(404).json({ error: "Post not found" });
+      return;
+    }
 
     const deletedPost = await db
       .delete(postsTable)
