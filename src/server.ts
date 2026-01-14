@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { Request, Response } from "express";
 import postsRoutes from "./routes/posts.routes.js";
 

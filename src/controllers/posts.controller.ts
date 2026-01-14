@@ -1,13 +1,20 @@
-import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
+import { Post } from "../interfaces/post.interface.js";
+import {
+  CreatePostBody,
+  UpdatePostBody,
+} from "../interfaces/post-body.interface.js";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
-export const getAllPosts = async (request: Request, response: Response) => {
+export const getAllPosts = async (
+  request: Request<{}, Post[], {}, { term?: string }>,
+  response: Response
+) => {
   try {
     const termParam = request.query.term;
     const term = typeof termParam === "string" ? termParam : undefined;
@@ -37,7 +44,7 @@ export const getAllPosts = async (request: Request, response: Response) => {
 };
 
 export const getPostById = async (
-  request: Request,
+  request: Request<{ id: number }, Post, {}>,
   response: Response
 ): Promise<void> => {
   try {
@@ -68,7 +75,7 @@ export const getPostById = async (
 };
 
 export const createPost = async (
-  request: Request,
+  request: Request<{}, Post, CreatePostBody, {}>,
   response: Response
 ): Promise<void> => {
   try {
@@ -101,7 +108,7 @@ export const createPost = async (
       }
     }
 
-    const newPost = await db
+    const [newPost] = await db
       .insert(postsTable)
       .values({
         title: title,
@@ -117,7 +124,10 @@ export const createPost = async (
   }
 };
 
-export const updatePost = async (request: Request, response: Response) => {
+export const updatePost = async (
+  request: Request<{ id: number }, Post, Partial<UpdatePostBody>, {}>,
+  response: Response
+) => {
   try {
     const { id } = request.params;
     const { title, content, category, tags } = request.body;
@@ -158,7 +168,7 @@ export const updatePost = async (request: Request, response: Response) => {
       return;
     }
 
-    const updatedPost = await db
+    const [updatedPost] = await db
       .update(postsTable)
       .set({ title: title, content: content, category: category, tags: tags })
       .where(eq(postsTable.id, Number(id)))
@@ -171,7 +181,10 @@ export const updatePost = async (request: Request, response: Response) => {
   }
 };
 
-export const deletePost = async (request: Request, response: Response) => {
+export const deletePost = async (
+  request: Request<{ id: number }, {}, {}, {}>,
+  response: Response
+) => {
   try {
     const { id } = request.params;
     const [postExist] = await db
