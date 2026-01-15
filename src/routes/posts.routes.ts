@@ -5,13 +5,15 @@ import {
   createPost,
   updatePost,
   deletePost,
-} from "../controllers/posts.controller.js";
+} from "../controllers/posts.controllers.js";
+import { validateData } from "../middlewares/validationMiddleware.js";
+import { postSchema } from "../zod/index.js";
 
 const router = Router();
 
 router.get("/", getAllPosts);
 router.get("/:id", getPostById);
-router.post("/", createPost);
+router.post("/", validateData(postSchema), createPost);
 router.put("/:id", updatePost);
 router.delete("/:id", deletePost);
 

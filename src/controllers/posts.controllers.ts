@@ -1,13 +1,9 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { eq } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
-import { Post } from "../interfaces/post.interface.js";
-import {
-  CreatePostBody,
-  UpdatePostBody,
-} from "../interfaces/post-body.interface.js";
+import { Post } from "../interfaces/index.js";
+import { PostBody } from "../zod/index.js";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -75,38 +71,11 @@ export const getPostById = async (
 };
 
 export const createPost = async (
-  request: Request<{}, Post, CreatePostBody, {}>,
+  request: Request<{}, Post, PostBody, {}>,
   response: Response
-): Promise<void> => {
+) => {
   try {
     const { title, content, category, tags } = request.body;
-
-    if (!title || title.trim() === "") {
-      response.status(400).json({ error: "The title field is empty." });
-      return;
-    }
-
-    if (!content || content.trim() === "") {
-      response.status(400).json({ error: "The content field is empty." });
-      return;
-    }
-
-    if (!category || category.trim() === "") {
-      response.status(400).json({ error: "The category field is empty." });
-      return;
-    }
-
-    if (!tags) {
-      response.status(400).json({ error: "The tags field is empty." });
-      return;
-    }
-
-    for (const tag of tags) {
-      if (tag.trim() === "") {
-        response.status(400).json({ error: "Tags cannot be empty strings." });
-        return;
-      }
-    }
 
     const [newPost] = await db
       .insert(postsTable)
@@ -124,8 +93,9 @@ export const createPost = async (
   }
 };
 
+// TODO: Add Zod
 export const updatePost = async (
-  request: Request<{ id: number }, Post, Partial<UpdatePostBody>, {}>,
+  request: Request<{ id: number }, Post, Partial<PostBody>, {}>,
   response: Response
 ) => {
   try {
