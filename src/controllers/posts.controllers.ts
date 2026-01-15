@@ -3,6 +3,7 @@ import { eq, sql } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
 import { Post, PostBody } from "../interfaces/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -31,10 +32,10 @@ export const getAllPosts = async (
       posts = await db.select().from(postsTable);
     }
 
-    response.status(200).json(posts);
+    response.status(StatusCodes.OK).json(posts);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(500).json({ error: message });
+    response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: message });
   }
 };
 
@@ -46,7 +47,9 @@ export const getPostById = async (
     const id = Number(request.params.id);
 
     if (Number.isNaN(id)) {
-      response.status(400).json({ error: "Invalid post id" });
+      response
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Invalid post id" });
       return;
     }
 
@@ -58,14 +61,14 @@ export const getPostById = async (
       .then((res) => res[0]);
 
     if (!post) {
-      response.status(404).json({ error: "Post not found" });
+      response.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
       return;
     }
 
-    response.status(200).json(post);
+    response.status(StatusCodes.OK).json(post);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(500).json({ error: message });
+    response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: message });
   }
 };
 
@@ -85,10 +88,10 @@ export const createPost = async (
         tags: tags,
       })
       .returning();
-    response.status(201).json(newPost);
+    response.status(StatusCodes.CREATED).json(newPost);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(400).json({ error: message });
+    response.status(StatusCodes.BAD_REQUEST).json({ error: message });
   }
 };
 
@@ -105,7 +108,7 @@ export const updatePost = async (
       .where(eq(postsTable.id, Number(id)));
 
     if (!postExist) {
-      response.status(404).json({ error: "Post not found" });
+      response.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
       return;
     }
 
@@ -115,10 +118,10 @@ export const updatePost = async (
       .where(eq(postsTable.id, Number(id)))
       .returning();
 
-    response.status(200).json(updatedPost);
+    response.status(StatusCodes.OK).json(updatedPost);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(400).json({ error: message });
+    response.status(StatusCodes.BAD_REQUEST).json({ error: message });
   }
 };
 
@@ -134,7 +137,7 @@ export const deletePost = async (
       .where(eq(postsTable.id, Number(id)));
 
     if (!postExist) {
-      response.status(404).json({ error: "Post not found" });
+      response.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
       return;
     }
 
@@ -142,9 +145,9 @@ export const deletePost = async (
       .delete(postsTable)
       .where(eq(postsTable.id, Number(id)));
 
-    response.sendStatus(204);
+    response.sendStatus(StatusCodes.NO_CONTENT);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(400).json({ error: message });
+    response.status(StatusCodes.BAD_REQUEST).json({ error: message });
   }
 };
