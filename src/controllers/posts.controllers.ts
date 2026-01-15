@@ -2,8 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { eq, sql } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
-import { Post } from "../interfaces/index.js";
-import { PostBody } from "../zod/index.js";
+import { Post, PostBody } from "../interfaces/index.js";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -93,7 +92,6 @@ export const createPost = async (
   }
 };
 
-// TODO: Add Zod
 export const updatePost = async (
   request: Request<{ id: number }, Post, Partial<PostBody>, {}>,
   response: Response
@@ -105,33 +103,6 @@ export const updatePost = async (
       .select()
       .from(postsTable)
       .where(eq(postsTable.id, Number(id)));
-
-    if (!title || title.trim() === "") {
-      response.status(400).json({ error: "The title field is empty." });
-      return;
-    }
-
-    if (!content || content.trim() === "") {
-      response.status(400).json({ error: "The content field is empty." });
-      return;
-    }
-
-    if (!category || category.trim() === "") {
-      response.status(400).json({ error: "The category field is empty." });
-      return;
-    }
-
-    if (!tags) {
-      response.status(400).json({ error: "The tags field is empty." });
-      return;
-    }
-
-    for (const tag of tags) {
-      if (tag.trim() === "") {
-        response.status(400).json({ error: "Tags cannot be empty strings." });
-        return;
-      }
-    }
 
     if (!postExist) {
       response.status(404).json({ error: "Post not found" });
