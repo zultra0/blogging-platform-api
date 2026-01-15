@@ -9,8 +9,8 @@ app.use(express.json());
 
 app.use("/posts", postsRoutes);
 
-app.get("/", (request: Request, response: Response) => {
-  response.send("Welcome to my Blogging Platform API");
+app.get("/", (req: Request, res: Response) => {
+  res.send("Welcome to my Blogging Platform API");
 });
 
 app.listen(PORT, () => {

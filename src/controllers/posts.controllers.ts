@@ -8,11 +8,11 @@ import { StatusCodes } from "http-status-codes";
 const db = drizzle(process.env.DATABASE_URL!);
 
 export const getAllPosts = async (
-  request: Request<{}, Post[], {}, { term?: string }>,
-  response: Response
+  req: Request<{}, Post[], {}, { term?: string }>,
+  res: Response
 ) => {
   try {
-    const termParam = request.query.term;
+    const termParam = req.query.term;
     const term = typeof termParam === "string" ? termParam : undefined;
 
     let posts;
@@ -32,24 +32,22 @@ export const getAllPosts = async (
       posts = await db.select().from(postsTable);
     }
 
-    response.status(StatusCodes.OK).json(posts);
+    res.status(StatusCodes.OK).json(posts);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: message });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: message });
   }
 };
 
 export const getPostById = async (
-  request: Request<{ id: number }, Post, {}>,
-  response: Response
+  req: Request<{ id: number }, Post, {}>,
+  res: Response
 ): Promise<void> => {
   try {
-    const id = Number(request.params.id);
+    const id = Number(req.params.id);
 
     if (Number.isNaN(id)) {
-      response
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Invalid post id" });
+      res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid post id" });
       return;
     }
 
@@ -61,23 +59,23 @@ export const getPostById = async (
       .then((res) => res[0]);
 
     if (!post) {
-      response.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
       return;
     }
 
-    response.status(StatusCodes.OK).json(post);
+    res.status(StatusCodes.OK).json(post);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: message });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: message });
   }
 };
 
 export const createPost = async (
-  request: Request<{}, Post, PostBody, {}>,
-  response: Response
+  req: Request<{}, Post, PostBody, {}>,
+  res: Response
 ) => {
   try {
-    const { title, content, category, tags } = request.body;
+    const { title, content, category, tags } = req.body;
 
     const [newPost] = await db
       .insert(postsTable)
@@ -88,27 +86,27 @@ export const createPost = async (
         tags: tags,
       })
       .returning();
-    response.status(StatusCodes.CREATED).json(newPost);
+    res.status(StatusCodes.CREATED).json(newPost);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(StatusCodes.BAD_REQUEST).json({ error: message });
+    res.status(StatusCodes.BAD_REQUEST).json({ error: message });
   }
 };
 
 export const updatePost = async (
-  request: Request<{ id: number }, Post, Partial<PostBody>, {}>,
-  response: Response
+  req: Request<{ id: number }, Post, Partial<PostBody>, {}>,
+  res: Response
 ) => {
   try {
-    const { id } = request.params;
-    const { title, content, category, tags } = request.body;
+    const { id } = req.params;
+    const { title, content, category, tags } = req.body;
     const [postExist] = await db
       .select()
       .from(postsTable)
       .where(eq(postsTable.id, Number(id)));
 
     if (!postExist) {
-      response.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
       return;
     }
 
@@ -118,26 +116,26 @@ export const updatePost = async (
       .where(eq(postsTable.id, Number(id)))
       .returning();
 
-    response.status(StatusCodes.OK).json(updatedPost);
+    res.status(StatusCodes.OK).json(updatedPost);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(StatusCodes.BAD_REQUEST).json({ error: message });
+    res.status(StatusCodes.BAD_REQUEST).json({ error: message });
   }
 };
 
 export const deletePost = async (
-  request: Request<{ id: number }, {}, {}, {}>,
-  response: Response
+  req: Request<{ id: number }, {}, {}, {}>,
+  res: Response
 ) => {
   try {
-    const { id } = request.params;
+    const { id } = req.params;
     const [postExist] = await db
       .select()
       .from(postsTable)
       .where(eq(postsTable.id, Number(id)));
 
     if (!postExist) {
-      response.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
       return;
     }
 
@@ -145,9 +143,9 @@ export const deletePost = async (
       .delete(postsTable)
       .where(eq(postsTable.id, Number(id)));
 
-    response.sendStatus(StatusCodes.NO_CONTENT);
+    res.sendStatus(StatusCodes.NO_CONTENT);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    response.status(StatusCodes.BAD_REQUEST).json({ error: message });
+    res.status(StatusCodes.BAD_REQUEST).json({ error: message });
   }
 };
