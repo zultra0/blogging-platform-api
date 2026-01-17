@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomError } from "../types/types.js";
 import { ZodError } from "zod";
 
 export const errorHandler = (
-  err: CustomError,
+  err: Error,
   req: Request,
   res: Response,
   next: NextFunction,
