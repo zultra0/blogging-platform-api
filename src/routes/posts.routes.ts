@@ -8,11 +8,12 @@ import {
 } from "../controllers/posts.controllers.js";
 import { validateBody } from "../middlewares/validateBody.js";
 import { createPostSchema, updatePostSchema } from "../zod/index.js";
+import { validateId } from "../middlewares/validateId.js";
 
 const router = Router();
 
 router.get("/", getAllPosts);
-router.get("/:id", getPostById);
+router.get("/:id", validateId, getPostById);
 router.post("/", validateBody(createPostSchema), createPost);
 router.put("/:id", validateBody(updatePostSchema), updatePost);
 router.delete("/:id", deletePost);

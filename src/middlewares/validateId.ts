@@ -7,7 +7,7 @@ import { postsTable } from "../db/schema.js";
 const db = drizzle(process.env.DATABASE_URL!);
 
 export const validateId = async (
-  req: Request,
+  req: Request<{ id: number }>,
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {

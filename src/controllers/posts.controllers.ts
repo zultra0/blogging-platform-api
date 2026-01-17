@@ -37,23 +37,7 @@ export const getPostById = async (
   req: Request<{ id: number }, Post, {}>,
   res: Response,
 ) => {
-  const id = Number(req.params.id);
-
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid post id" });
-  }
-
-  const post = await db
-    .select()
-    .from(postsTable)
-    .where(eq(postsTable.id, id))
-    .limit(1)
-    .then((res) => res[0]);
-
-  if (!post) {
-    return res.status(404).json({ error: "Post not found" });
-  }
-
+  const post = req.post;
   return res.status(200).json(post);
 };
 
