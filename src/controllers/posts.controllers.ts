@@ -64,12 +64,12 @@ export const updatePost = async (
   req: Request<{ id: number }, Post, Partial<PostBody>, {}>,
   res: Response,
 ) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   const { title, content, category, tags } = req.body;
   const [postExist] = await db
     .select()
     .from(postsTable)
-    .where(eq(postsTable.id, Number(id)));
+    .where(eq(postsTable.id, id));
 
   if (!postExist) {
     return res.status(404).json({ error: "Post not found" });
@@ -78,7 +78,7 @@ export const updatePost = async (
   const [updatedPost] = await db
     .update(postsTable)
     .set({ title: title, content: content, category: category, tags: tags })
-    .where(eq(postsTable.id, Number(id)))
+    .where(eq(postsTable.id, id))
     .returning();
 
   return res.status(200).json(updatedPost);
@@ -88,19 +88,17 @@ export const deletePost = async (
   req: Request<{ id: number }, {}, {}, {}>,
   res: Response,
 ) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   const [postExist] = await db
     .select()
     .from(postsTable)
-    .where(eq(postsTable.id, Number(id)));
+    .where(eq(postsTable.id, id));
 
   if (!postExist) {
     return res.status(404).json({ error: "Post not found" });
   }
 
-  const deletedPost = await db
-    .delete(postsTable)
-    .where(eq(postsTable.id, Number(id)));
+  const deletedPost = await db.delete(postsTable).where(eq(postsTable.id, id));
 
   return res.sendStatus(204);
 };
