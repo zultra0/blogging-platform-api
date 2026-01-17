@@ -1,8 +1,9 @@
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
 import { Post, PostBody } from "../interfaces/index.js";
 import { db } from "../db/index.js";
+import { ftsSearch } from "../db/utils.js";
 
 export const getAllPosts = async (
   req: Request<{}, Post[], {}, { term?: string }>,
@@ -13,17 +14,16 @@ export const getAllPosts = async (
 
   let posts;
   if (term) {
-    const result = await db.execute(
-      sql`
-          SELECT *
-          FROM ${postsTable}
-          WHERE to_tsvector(
-            'spanish',
-            ${postsTable.title} || ' ' || ${postsTable.content} || ' ' || ${postsTable.category}
-          ) @@ to_tsquery('spanish', ${term})
-        `,
-    );
-    posts = result.rows;
+    const result = await db
+      .select()
+      .from(postsTable)
+      .where(
+        ftsSearch(
+          [postsTable.title, postsTable.content, postsTable.category],
+          term,
+        ),
+      );
+    posts = result;
   } else {
     posts = await db.select().from(postsTable);
   }
