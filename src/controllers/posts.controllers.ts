@@ -66,14 +66,6 @@ export const updatePost = async (
 ) => {
   const id = Number(req.params.id);
   const { title, content, category, tags } = req.body;
-  const [postExist] = await db
-    .select()
-    .from(postsTable)
-    .where(eq(postsTable.id, id));
-
-  if (!postExist) {
-    return res.status(404).json({ error: "Post not found" });
-  }
 
   const [updatedPost] = await db
     .update(postsTable)
