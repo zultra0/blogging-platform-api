@@ -16,6 +16,6 @@ router.get("/", getAllPosts);
 router.get("/:id", validateId, getPostById);
 router.post("/", validateBody(createPostSchema), createPost);
 router.put("/:id", validateId, validateBody(updatePostSchema), updatePost);
-router.delete("/:id", deletePost);
+router.delete("/:id", validateId, deletePost);
 
 export default router;

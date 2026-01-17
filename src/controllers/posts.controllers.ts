@@ -81,15 +81,6 @@ export const deletePost = async (
   res: Response,
 ) => {
   const id = Number(req.params.id);
-  const [postExist] = await db
-    .select()
-    .from(postsTable)
-    .where(eq(postsTable.id, id));
-
-  if (!postExist) {
-    return res.status(404).json({ error: "Post not found" });
-  }
-
   const deletedPost = await db.delete(postsTable).where(eq(postsTable.id, id));
 
   return res.sendStatus(204);
