@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { db } from "../db/index.js";
