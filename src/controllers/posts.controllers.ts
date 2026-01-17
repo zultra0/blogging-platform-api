@@ -3,13 +3,12 @@ import { eq, sql } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
 import { Post, PostBody } from "../interfaces/index.js";
-import { StatusCodes } from "http-status-codes";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
 export const getAllPosts = async (
   req: Request<{}, Post[], {}, { term?: string }>,
-  res: Response
+  res: Response,
 ) => {
   const termParam = req.query.term;
   const term = typeof termParam === "string" ? termParam : undefined;
@@ -24,24 +23,24 @@ export const getAllPosts = async (
             'spanish',
             ${postsTable.title} || ' ' || ${postsTable.content} || ' ' || ${postsTable.category}
           ) @@ to_tsquery('spanish', ${term})
-        `
+        `,
     );
     posts = result.rows;
   } else {
     posts = await db.select().from(postsTable);
   }
 
-  res.status(StatusCodes.OK).json(posts);
+  res.status(200).json(posts);
 };
 
 export const getPostById = async (
   req: Request<{ id: number }, Post, {}>,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   const id = Number(req.params.id);
 
   if (Number.isNaN(id)) {
-    res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid post id" });
+    res.status(400).json({ error: "Invalid post id" });
     return;
   }
 
@@ -53,16 +52,16 @@ export const getPostById = async (
     .then((res) => res[0]);
 
   if (!post) {
-    res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
+    res.status(404).json({ error: "Post not found" });
     return;
   }
 
-  res.status(StatusCodes.OK).json(post);
+  res.status(200).json(post);
 };
 
 export const createPost = async (
   req: Request<{}, Post, PostBody, {}>,
-  res: Response
+  res: Response,
 ) => {
   const { title, content, category, tags } = req.body;
 
@@ -75,12 +74,12 @@ export const createPost = async (
       tags: tags,
     })
     .returning();
-  res.status(StatusCodes.CREATED).json(newPost);
+  res.status(201).json(newPost);
 };
 
 export const updatePost = async (
   req: Request<{ id: number }, Post, Partial<PostBody>, {}>,
-  res: Response
+  res: Response,
 ) => {
   const { id } = req.params;
   const { title, content, category, tags } = req.body;
@@ -90,7 +89,7 @@ export const updatePost = async (
     .where(eq(postsTable.id, Number(id)));
 
   if (!postExist) {
-    res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
+    res.status(404).json({ error: "Post not found" });
     return;
   }
 
@@ -100,12 +99,12 @@ export const updatePost = async (
     .where(eq(postsTable.id, Number(id)))
     .returning();
 
-  res.status(StatusCodes.OK).json(updatedPost);
+  res.status(200).json(updatedPost);
 };
 
 export const deletePost = async (
   req: Request<{ id: number }, {}, {}, {}>,
-  res: Response
+  res: Response,
 ) => {
   const { id } = req.params;
   const [postExist] = await db
@@ -114,7 +113,7 @@ export const deletePost = async (
     .where(eq(postsTable.id, Number(id)));
 
   if (!postExist) {
-    res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
+    res.status(404).json({ error: "Post not found" });
     return;
   }
 
@@ -122,5 +121,5 @@ export const deletePost = async (
     .delete(postsTable)
     .where(eq(postsTable.id, Number(id)));
 
-  res.sendStatus(StatusCodes.NO_CONTENT);
+  res.sendStatus(204);
 };

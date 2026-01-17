@@ -10,7 +10,6 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
-    "http-status-codes": "^2.3.0",
     "pg": "^8.16.3",
     "zod": "^4.3.5"
   },
