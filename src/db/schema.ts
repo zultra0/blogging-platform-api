@@ -1,5 +1,4 @@
 import { pgTable, serial, varchar, text, timestamp } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 export const postsTable = pgTable("posts", {
   id: serial().primaryKey().notNull(),
