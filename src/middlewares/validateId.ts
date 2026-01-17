@@ -3,8 +3,7 @@ import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
-
-const db = drizzle(process.env.DATABASE_URL!);
+import { db } from "../db/index.js";
 
 export const validateId = async (
   req: Request<{ id: number }>,

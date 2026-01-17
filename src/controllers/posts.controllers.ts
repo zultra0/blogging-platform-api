@@ -3,8 +3,7 @@ import { eq, sql } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
 import { Post, PostBody } from "../interfaces/index.js";
-
-const db = drizzle(process.env.DATABASE_URL!);
+import { db } from "../db/index.js";
 
 export const getAllPosts = async (
   req: Request<{}, Post[], {}, { term?: string }>,
