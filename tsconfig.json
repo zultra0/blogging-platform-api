@@ -7,7 +7,7 @@
     "rootDir": "./src",
     "strict": true,
     "allowJs": true,
-    "noImplicitReturns": true,
+    "noImplicitReturns": false,
     "noImplicitAny": true,
     "noEmitOnError": true,
     "forceConsistentCasingInFileNames": true,

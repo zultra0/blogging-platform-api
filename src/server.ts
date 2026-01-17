@@ -11,7 +11,7 @@ app.use(express.json());
 app.use("/posts", postsRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to my Blogging Platform API");
+  return res.send("Welcome to my Blogging Platform API");
 });
 
 app.use(errorHandler);

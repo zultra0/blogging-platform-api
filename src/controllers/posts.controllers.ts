@@ -30,18 +30,17 @@ export const getAllPosts = async (
     posts = await db.select().from(postsTable);
   }
 
-  res.status(200).json(posts);
+  return res.status(200).json(posts);
 };
 
 export const getPostById = async (
   req: Request<{ id: number }, Post, {}>,
   res: Response,
-): Promise<void> => {
+) => {
   const id = Number(req.params.id);
 
   if (Number.isNaN(id)) {
-    res.status(400).json({ error: "Invalid post id" });
-    return;
+    return res.status(400).json({ error: "Invalid post id" });
   }
 
   const post = await db
@@ -52,11 +51,10 @@ export const getPostById = async (
     .then((res) => res[0]);
 
   if (!post) {
-    res.status(404).json({ error: "Post not found" });
-    return;
+    return res.status(404).json({ error: "Post not found" });
   }
 
-  res.status(200).json(post);
+  return res.status(200).json(post);
 };
 
 export const createPost = async (
@@ -74,7 +72,8 @@ export const createPost = async (
       tags: tags,
     })
     .returning();
-  res.status(201).json(newPost);
+
+  return res.status(201).json(newPost);
 };
 
 export const updatePost = async (
@@ -89,8 +88,7 @@ export const updatePost = async (
     .where(eq(postsTable.id, Number(id)));
 
   if (!postExist) {
-    res.status(404).json({ error: "Post not found" });
-    return;
+    return res.status(404).json({ error: "Post not found" });
   }
 
   const [updatedPost] = await db
@@ -99,7 +97,7 @@ export const updatePost = async (
     .where(eq(postsTable.id, Number(id)))
     .returning();
 
-  res.status(200).json(updatedPost);
+  return res.status(200).json(updatedPost);
 };
 
 export const deletePost = async (
@@ -113,13 +111,12 @@ export const deletePost = async (
     .where(eq(postsTable.id, Number(id)));
 
   if (!postExist) {
-    res.status(404).json({ error: "Post not found" });
-    return;
+    return res.status(404).json({ error: "Post not found" });
   }
 
   const deletedPost = await db
     .delete(postsTable)
     .where(eq(postsTable.id, Number(id)));
 
-  res.sendStatus(204);
+  return res.sendStatus(204);
 };
