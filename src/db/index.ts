@@ -7,7 +7,7 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not defined in .env file.");
 }
 
-const pool = new Pool({
+const pool: Pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 

@@ -3,22 +3,25 @@ import "dotenv/config";
 import { eq } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { db } from "../db/index.js";
+import { Post } from "../db/schema.js";
 
 export const validateId = async (
   req: Request<{ id: number }>,
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {
-  const id = Number(req.params.id);
+  const id: number = Number(req.params.id);
 
   if (isNaN(id)) {
     return res.status(400).json({ error: "Invalid post id." });
   }
 
-  const [post] = await db
+  const post: Post = await db
     .select()
     .from(postsTable)
-    .where(eq(postsTable.id, id));
+    .where(eq(postsTable.id, id))
+    .limit(1)
+    .then((res) => res[0]);
 
   if (post) {
     req.post = post;

@@ -1,32 +1,28 @@
-import { eq } from "drizzle-orm";
+import { eq, Update } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
-import { Post, PostBody } from "../interfaces/index.js";
+import { Post, NewPost, UpdatePost } from "../db/schema.js";
 import { db } from "../db/index.js";
 import { ftsSearch } from "../db/utils.js";
 
 export const getAllPosts = async (
   req: Request<{}, Post[], {}, { term?: string }>,
   res: Response,
-) => {
-  const termParam = req.query.term;
-  const term = typeof termParam === "string" ? termParam : undefined;
+): Promise<Response> => {
+  // prettier-ignore
+  const term: string | undefined = typeof req.query.term === "string" ? req.query.term : undefined;
 
-  let posts;
-  if (term) {
-    const result = await db
-      .select()
-      .from(postsTable)
-      .where(
-        ftsSearch(
-          [postsTable.title, postsTable.content, postsTable.category],
-          term,
-        ),
-      );
-    posts = result;
-  } else {
-    posts = await db.select().from(postsTable);
-  }
+  const posts: Post[] = term
+    ? await db
+        .select()
+        .from(postsTable)
+        .where(
+          ftsSearch(
+            [postsTable.title, postsTable.content, postsTable.category],
+            term,
+          ),
+        )
+    : await db.select().from(postsTable);
 
   return res.status(200).json(posts);
 };
@@ -34,42 +30,35 @@ export const getAllPosts = async (
 export const getPostById = async (
   req: Request<{ id: number }, Post, {}>,
   res: Response,
-) => {
-  const post = req.post;
+): Promise<Response> => {
+  const post: Post | undefined = req.post;
   return res.status(200).json(post);
 };
 
 export const createPost = async (
-  req: Request<{}, Post, PostBody, {}>,
+  req: Request<{}, Post, NewPost, {}>,
   res: Response,
-) => {
-  const { title, content, category, tags } = req.body;
-
-  const [newPost] = await db
+): Promise<Response> => {
+  const newPost: Post = await db
     .insert(postsTable)
-    .values({
-      title: title,
-      content: content,
-      category: category,
-      tags: tags,
-    })
-    .returning();
+    .values(req.body)
+    .returning()
+    .then((res) => res[0]);
 
   return res.status(201).json(newPost);
 };
 
 export const updatePost = async (
-  req: Request<{ id: number }, Post, Partial<PostBody>, {}>,
+  req: Request<{ id: number }, Post, UpdatePost, {}>,
   res: Response,
-) => {
-  const id = Number(req.params.id);
-  const { title, content, category, tags } = req.body;
-
-  const [updatedPost] = await db
+): Promise<Response> => {
+  const id: number = Number(req.params.id);
+  const updatedPost: Post = await db
     .update(postsTable)
-    .set({ title: title, content: content, category: category, tags: tags })
+    .set(req.body)
     .where(eq(postsTable.id, id))
-    .returning();
+    .returning()
+    .then((res) => res[0]);
 
   return res.status(200).json(updatedPost);
 };
@@ -77,9 +66,13 @@ export const updatePost = async (
 export const deletePost = async (
   req: Request<{ id: number }, {}, {}, {}>,
   res: Response,
-) => {
-  const id = Number(req.params.id);
-  const deletedPost = await db.delete(postsTable).where(eq(postsTable.id, id));
+): Promise<Response> => {
+  const id: number = Number(req.params.id);
+  const deletedPost: Post = await db
+    .delete(postsTable)
+    .where(eq(postsTable.id, id))
+    .returning()
+    .then((res) => res[0]);
 
   return res.sendStatus(204);
 };

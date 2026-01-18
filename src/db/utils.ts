@@ -6,6 +6,6 @@ export const ftsSearch = (
   term: string,
   lang = "spanish",
 ): SQL => {
-  const concatenatedColumns = sql.join(columns, sql` || ' ' || `);
+  const concatenatedColumns: SQL = sql.join(columns, sql` || ' ' || `);
   return sql`to_tsvector(${lang}, ${concatenatedColumns}) @@ plainto_tsquery(${lang}, ${term})`;
 };
