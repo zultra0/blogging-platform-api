@@ -16,5 +16,6 @@ export const postsTable = pgTable("posts", {
 });
 
 export type Post = InferSelectModel<typeof postsTable>;
-export type NewPost = InferInsertModel<typeof postsTable>;
-export type UpdatePost = Partial<InferInsertModel<typeof postsTable>>;
+export type NewPost = Pick<Post, "title" | "content" | "category" | "tags">;
+export type UpdatePost = Partial<Post>;
+
