@@ -9,7 +9,6 @@ export const getAllPosts = async (
   req: Request<{}, Post[], {}, { term?: string }>,
   res: Response,
 ): Promise<Response> => {
-  // prettier-ignore
   const term: string | undefined = typeof req.query.term === "string" ? req.query.term : undefined;
 
   const posts: Post[] = term
