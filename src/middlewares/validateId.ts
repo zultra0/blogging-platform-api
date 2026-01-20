@@ -10,7 +10,7 @@ export const validateId = async (
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {
-  const id: number = Number(req.params.id);
+  const id = Number(req.params.id);
 
   if (isNaN(id)) {
     return res.status(400).json({ error: "Invalid post id." });

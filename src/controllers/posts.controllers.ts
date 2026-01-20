@@ -1,4 +1,4 @@
-import { eq, Update } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { postsTable } from "../db/schema.js";
 import { Request, Response } from "express";
 import { Post, NewPost, UpdatePost } from "../db/schema.js";

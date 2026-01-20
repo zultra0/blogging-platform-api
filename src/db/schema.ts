@@ -1,4 +1,4 @@
-import { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { InferSelectModel } from "drizzle-orm";
 import { pgTable, serial, varchar, text, timestamp } from "drizzle-orm/pg-core";
 
 export const postsTable = pgTable("posts", {
