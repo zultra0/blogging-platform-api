@@ -1,0 +1,1 @@
+Welcome to the repo of my Blogging Platform API!
