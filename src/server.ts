@@ -3,8 +3,8 @@ import express, { Application, Request, Response } from "express";
 import postsRoutes from "./routes/posts.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
-const app: Application = express();
-const PORT: number = Number(process.env.PORT) || 3000;
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 

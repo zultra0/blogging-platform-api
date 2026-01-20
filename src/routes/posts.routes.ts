@@ -10,7 +10,7 @@ import { validateBody } from "../middlewares/validateBody.js";
 import { createPostSchema, updatePostSchema } from "../zod/index.js";
 import { validateId } from "../middlewares/validateId.js";
 
-const router: Router = Router();
+const router = Router();
 
 router.get("/", getAllPosts);
 router.get("/:id", validateId, getPostById);
