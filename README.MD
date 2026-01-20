@@ -1,4 +1,4 @@
-<p style="text-align: center;">¡Welcome to the repository of my Blogging Platform API!</p>
+¡Welcome to the repository of my Blogging Platform API!
 
 ## Features
 
@@ -86,34 +86,34 @@ CREATE TABLE public.posts
 ```bash
 INSERT INTO public.posts (title, content, category, tags) VALUES
 (
-    'Introducción a TypeScript en el Backend',
-    'Aprender TypeScript es fundamental para construir APIs robustas con Node.js y Express. Mejora la seguridad de tipos y facilita el mantenimiento a largo plazo.',
-    'Programación',
+    'Introduction to TypeScript in the Backend',
+    'Learning TypeScript is essential for building robust APIs with Node.js and Express. It improves type safety and facilitates long-term maintenance.',
+    'Programming',
     ARRAY['typescript', 'node', 'backend', 'web']
 ),
 (
-    'Optimizando Consultas con Drizzle ORM',
-    'Drizzle ORM es una herramienta ligera y eficiente para manejar bases de datos SQL. En este post veremos cómo usar el Query Builder para mejorar el rendimiento.',
-    'Bases de Datos',
+    'Optimizing Queries with Drizzle ORM',
+    'Drizzle ORM is a lightweight and efficient tool for handling SQL databases. In this post we will see how to use the Query Builder to improve performance.',
+    'Databases',
     ARRAY['drizzle', 'orm', 'sql', 'postgres']
 ),
 (
-    'El futuro del desarrollo con NextJS',
-    'NextJS se ha consolidado como el framework líder para React. Discutiremos las ventajas de los Server Components y las nuevas Server Actions.',
-    'Desarrollo Web',
+    'The Future of Development with NextJS',
+    'NextJS has established itself as the leading framework for React. We will discuss the advantages of Server Components and the new Server Actions.',
+    'Web Development',
     ARRAY['nextjs', 'react', 'frontend', 'javascript']
 ),
 (
-    'Búsqueda Inteligente en PostgreSQL',
-    'PostgreSQL ofrece potentes herramientas para búsqueda de texto completo (FTS). Implementar un motor inteligente con to_tsvector y tsquery es más sencillo de lo que parece.',
-    'Bases de Datos',
+    'Intelligent Search in PostgreSQL',
+    'PostgreSQL offers powerful tools for full-text search (FTS). Implementing an intelligent engine with to_tsvector and tsquery is easier than it seems.',
+    'Databases',
     ARRAY['postgres', 'fts', 'search', 'backend']
 ),
 (
-    'Arquitectura de Microservicios con Express',
-    'Cómo escalar una plataforma de blogging utilizando microservicios escritos en Node.js y comunicados mediante colas de mensajes o APIs REST.',
-    'Arquitectura',
-    ARRAY['microservicios', 'express', 'node', 'escalabilidad']
+    'Microservices Architecture with Express',
+    'How to scale a blogging platform using microservices written in Node.js and communicated through message queues or REST APIs.',
+    'Architecture',
+    ARRAY['microservices', 'express', 'node', 'scalability']
 );
 ```
 
