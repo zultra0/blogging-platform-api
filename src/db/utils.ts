@@ -4,7 +4,7 @@ import { AnyPgColumn } from "drizzle-orm/pg-core";
 export const ftsSearch = (
   columns: AnyPgColumn[],
   term: string,
-  lang = "spanish",
+  lang = "english",
 ): SQL => {
   const concatenatedColumns = sql.join(columns, sql` || ' ' || `);
   return sql`to_tsvector(${lang}, ${concatenatedColumns}) @@ plainto_tsquery(${lang}, ${term})`;
