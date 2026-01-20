@@ -25,7 +25,7 @@ export const validateId = async (
 
   if (post) {
     req.post = post;
-    return next();
+    next();
   } else {
     return res.status(404).json({ error: "Post not found." });
   }
