@@ -123,6 +123,145 @@ INSERT INTO public.posts (title, content, category, tags) VALUES
 npm run dev
 ```
 
+That's it, you're done🥳! 
+
+## Using the API endpoints
+
+### Create Blog Post ###
+
+Create a new blog post using the POST method.
+
+```bash
+POST /posts
+{
+  "title": "My First Blog Post",
+  "content": "This is the content of my first blog post.",
+  "category": "Technology",
+  "tags": ["Tech", "Programming"]
+}
+```
+
+The endpoint will validate the request body and return a 201 Created status code with the newly created blog post i.e.
+
+```bash
+{
+  "id": 1,
+  "title": "My First Blog Post",
+  "content": "This is the content of my first blog post.",
+  "category": "Technology",
+  "tags": ["Tech", "Programming"],
+  "createdAt": "2021-09-01T12:00:00Z",
+  "updatedAt": "2021-09-01T12:00:00Z"
+}
+```
+
+or a 400 Bad Request status code with error messages in case of validation errors.
+
+### Update Blog Post ###
+
+Update an existing blog post using the PUT method.
+
+```bash
+PUT /posts/1
+{
+  "title": "My Updated Blog Post",
+  "content": "This is the updated content of my first blog post.",
+  "category": "Technology",
+  "tags": ["Tech", "Programming"]
+}
+```
+
+The endpoint will validate the request body and return a 200 OK status code with the updated blog post i.e.
+
+```bash
+{
+  "id": 1,
+  "title": "My Updated Blog Post",
+  "content": "This is the updated content of my first blog post.",
+  "category": "Technology",
+  "tags": ["Tech", "Programming"],
+  "createdAt": "2021-09-01T12:00:00Z",
+  "updatedAt": "2021-09-01T12:30:00Z"
+}
+```
+
+or a 400 Bad Request status code with error messages in case of validation errors. It will return a 404 Not Found status code if the blog post was not found.
+
+### Delete Blog Post ###
+
+Delete an existing blog post using the DELETE method.
+
+```bash
+DELETE /posts/1
+```
+
+The endpoint will return a 204 No Content status code if the blog post was successfully deleted or a 404 Not Found status code if the blog post was not found.
+
+### Get Blog Post ###
+
+Get a single blog post using the GET method.
+
+```bash
+GET /posts/1
+```
+
+The endpoint will return a 200 OK status code with the blog post i.e.
+
+```bash
+{
+  "id": 1,
+  "title": "My First Blog Post",
+  "content": "This is the content of my first blog post.",
+  "category": "Technology",
+  "tags": ["Tech", "Programming"],
+  "createdAt": "2021-09-01T12:00:00Z",
+  "updatedAt": "2021-09-01T12:00:00Z"
+}
+```
+
+or a 404 Not Found status code if the blog post was not found.
+
+### Get All Blog Posts ###
+
+Get all blog posts using the GET method.
+
+```bash
+GET /posts
+```
+
+The endpoint will return a 200 OK status code with an array of blog posts i.e.
+
+```bash
+[
+  {
+    "id": 1,
+    "title": "My First Blog Post",
+    "content": "This is the content of my first blog post.",
+    "category": "Technology",
+    "tags": ["Tech", "Programming"],
+    "createdAt": "2021-09-01T12:00:00Z",
+    "updatedAt": "2021-09-01T12:00:00Z"
+  },
+  {
+    "id": 2,
+    "title": "My Second Blog Post",
+    "content": "This is the content of my second blog post.",
+    "category": "Technology",
+    "tags": ["Tech", "Programming"],
+    "createdAt": "2021-09-01T12:30:00Z",
+    "updatedAt": "2021-09-01T12:30:00Z"
+  }
+]
+```
+
+You can also filter posts by a keyword. The application will perform a full-text (FTS) search on the title, content, and category fields of blog posts. For example:
+
+```bash
+GET /posts?term=typescript
+```
+
+This will return all blog posts that have the term "typescript" in their title, content or category.
+
 ## Author
 
 - [@zultra0](https://github.com/zultra0)
