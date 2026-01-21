@@ -1,4 +1,4 @@
-¡Welcome to the repository of my Blogging Platform API!
+Welcome to the repository of my Blogging Platform API!
 
 ## Features
 
