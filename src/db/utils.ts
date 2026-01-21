@@ -7,5 +7,12 @@ export const ftsSearch = (
   lang = "english",
 ): SQL => {
   const concatenatedColumns = sql.join(columns, sql` || ' ' || `);
-  return sql`to_tsvector(${lang}, ${concatenatedColumns}) @@ plainto_tsquery(${lang}, ${term})`;
+  const formattedTerm = term
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => `${word}:*`)
+    .join(" & ");
+
+  return sql`to_tsvector(${lang}, ${concatenatedColumns}) @@ to_tsquery(${lang}, ${formattedTerm})`;
 };
