@@ -262,6 +262,8 @@ GET /posts?term=typescript
 
 This will return all blog posts that have the term "typescript" in their title, content or category.
 
+### challenge proposed by: https://roadmap.sh/projects/blogging-platform-api
+
 ## Author
 
 - [@zultra0](https://github.com/zultra0)
