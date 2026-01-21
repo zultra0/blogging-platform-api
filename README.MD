@@ -46,7 +46,7 @@ git clone https://github.com/zultra0/Blogging-Platform-API.git
 2. Navigate to the project directory:
 
 ```bash
-cd Blogging-Platform-API
+cd blogging-platform-api
 ```
 
 3. Install dependencies using npm:
