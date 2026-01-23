@@ -40,13 +40,13 @@ To run this project locally, you need to set up the development environment.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/mkco0/blogging-platform-api.git
+git clone https://github.com/mkco0/blog-api.git
 ```
 
 2. Navigate to the project directory:
 
 ```bash
-cd blogging-platform-api
+cd blog-api
 ```
 
 3. Install dependencies using npm:
