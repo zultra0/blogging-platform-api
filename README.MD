@@ -264,4 +264,4 @@ This will return all blog posts that have the term "typescript" in their title, 
 
 ## Author
 
-- [@mkco](https://github.com/mkco17)
+- [@mkco](https://github.com/mkco0)
